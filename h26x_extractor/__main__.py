@@ -40,7 +40,7 @@ def print_nalu(parser, nalu: nalutypes.NALU, type, start, end):
 
     if type not in nalu_types:
         return
-    
+
     print("")
     print(
         "========================================================================================================"
@@ -75,10 +75,13 @@ def print_nalu(parser, nalu: nalutypes.NALU, type, start, end):
 
 def main():
     for f in args["<input-file>"]:
-        
+
         # This is a good example of how to use the h26x_parser module
         # and how to set up callbacks for every NALU types.
         parser = h26x_parser.H26xParser(f)
+
+        # def print_nalu(parser, nalu: nalutypes.NALU, type, start, end):
+        # partial(print_nalu, parser) make a new func
         parser.set_allcallbacks(partial(print_nalu, parser))
         parser.parse()
 

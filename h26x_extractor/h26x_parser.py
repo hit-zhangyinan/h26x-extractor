@@ -80,8 +80,9 @@ class H26xParser:
                 rbsp_dec.append(rbsp_enc[i])
             i += 1
         return rbsp_dec
-    
+
     def set_allcallbacks(self, fun):
+        # fun is similar to "pointer to function" in C
         """
         Set a callback function for all types of NALUs.
         """
@@ -112,6 +113,8 @@ class H26xParser:
         if not callable(fun):
             raise RuntimeError(str(fun) + " is not a callable function")
 
+        # {str: function, str: function, ...}
+        # fun is partial(print_nalu, parser)
         self.callbacks[name] = fun
 
     def __call(self, name, *args):
@@ -127,6 +130,10 @@ class H26xParser:
         if name not in self.callbacks.keys():
             return
         else:
+            # fun(*args) is the same as partial(print_nalu, parser)(*args)
+            # def print_nalu(parser, nalu: nalutypes.NALU, type, start, end):
+            # *args = (nalu: nalutypes.NALU, type, start, end)
+            # nalutypes.xxx
             self.callbacks[name](*args)
 
     def _get_nalu_pos(self):
@@ -183,7 +190,7 @@ class H26xParser:
                 _start = start - 4
             else:
                 _start = start - 3
-            
+
             rbsp_payload = self.getRSBP(start + 1, end + 1)
 
             # Parse the current NALU
